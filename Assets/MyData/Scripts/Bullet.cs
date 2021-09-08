@@ -27,6 +27,14 @@ public class Bullet : MonoBehaviour
     }
     void FixedUpdate()
     {
-        transform.position = Vector3.MoveTowards(transform.position, _point, _speed * Time.fixedDeltaTime);
+        //transform.position = Vector3.MoveTowards(transform.position, _point, _speed * Time.fixedDeltaTime);
+
+        Shoot();
+        //transform.position += new Vector3(Time.deltaTime *_speed , 0, 0); 
     }
+
+    private void Shoot()
+    {
+        transform.Translate(Vector3.forward * Time.deltaTime * _speed, _target);   
+    }   
 }
