@@ -27,7 +27,8 @@ public class Player : MonoBehaviour
         _isFire = Input.GetMouseButtonDown(0);
         _setMine = Input.GetMouseButtonDown(1);
         _direction.x = Input.GetAxis("Horizontal");
-        _direction.z = Input.GetAxis("Vertical");    
+        _direction.z = Input.GetAxis("Vertical");
+        _direction.y = Input.GetAxis("Jump");
     }
 
     private void FixedUpdate()
@@ -35,15 +36,14 @@ public class Player : MonoBehaviour
         transform.Translate(_direction.normalized * _speed * Time.fixedDeltaTime);
         transform.Rotate(Vector3.up, Input.GetAxis("Mouse X") * _rotateSpeed * Time.fixedDeltaTime);
 
-        if (_isFire) Fire();
+        if (_isFire) Fire(Camera.main.transform);
         if (_setMine) SetMine();
     }
-    private void Fire()
+    private void Fire(Transform cell)
     {
         _isFire = false;
         GameObject bullet = Instantiate(_bulletObject, _bulletSpawn.position, Quaternion.identity);
-
-        bullet.GetComponent<Bullet>().Initialization(5f, _target);
+        bullet.GetComponent<Bullet>().Initialization(5f, cell);
     }
     private void SetMine()
     {
