@@ -10,7 +10,7 @@ public class DoorButton_Rotate : MonoBehaviour
     private void Start()
     {
         text = transform.GetChild(1);
-        text.gameObject.active = false;
+        text.gameObject.SetActive(false);
     }
     private void Update()
     {
@@ -21,7 +21,7 @@ public class DoorButton_Rotate : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        text.gameObject.active = true;
+        text.gameObject.SetActive(true);
     }
     private void OnTriggerStay(Collider other)
     {
@@ -37,6 +37,6 @@ public class DoorButton_Rotate : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        text.gameObject.active = false;
+        text.gameObject.SetActive(false);
     }
 }

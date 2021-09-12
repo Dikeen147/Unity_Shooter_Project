@@ -9,19 +9,17 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector3 _direction;
     [SerializeField] private GameObject _bulletObject;
     [SerializeField] private Transform _bulletSpawn;
-    [SerializeField] private Transform _target;
     [SerializeField] private GameObject _mine;
     [SerializeField] private Transform _mineSpawnPlace;
     private bool _isFire;
     private bool _setMine;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = true;
     }
 
-    // Update is called once per frame
     private void Update()
     {
         _isFire = Input.GetMouseButtonDown(0);
@@ -29,21 +27,21 @@ public class Player : MonoBehaviour
         _direction.x = Input.GetAxis("Horizontal");
         _direction.z = Input.GetAxis("Vertical");
         _direction.y = Input.GetAxis("Jump");
+
+        if (_isFire) Fire();
+        if (_setMine) SetMine();
     }
 
     private void FixedUpdate()
     {
         transform.Translate(_direction.normalized * _speed * Time.fixedDeltaTime);
         transform.Rotate(Vector3.up, Input.GetAxis("Mouse X") * _rotateSpeed * Time.fixedDeltaTime);
-
-        if (_isFire) Fire(Camera.main.transform);
-        if (_setMine) SetMine();
     }
-    private void Fire(Transform cell)
+    private void Fire()
     {
         _isFire = false;
-        GameObject bullet = Instantiate(_bulletObject, _bulletSpawn.position, Quaternion.identity);
-        bullet.GetComponent<Bullet>().Initialization(5f, cell);
+        GameObject bullet = Instantiate(_bulletObject, _bulletSpawn.position, _bulletSpawn.rotation);
+        bullet.GetComponent<Bullet>().Initialization(5f);
     }
     private void SetMine()
     {

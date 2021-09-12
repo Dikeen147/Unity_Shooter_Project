@@ -4,37 +4,23 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    [SerializeField] private float _speed;
-    private Transform _target;
-    private Vector3 _point;
+    [SerializeField] private float _speed = 10f;
 
-    public void Initialization(float bulletLifeTime, Transform target) {
-        _target = target;
-        _point = target.position;
+    public void Initialization(float bulletLifeTime) {
 
         Destroy(gameObject, bulletLifeTime);
     }
-    // Start is called before the first frame update
-    void Start()
+
+    private void Update()
     {
-        
+        transform.position += transform.forward * _speed * Time.deltaTime;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     void FixedUpdate()
     {
         //transform.position = Vector3.MoveTowards(transform.position, _point, _speed * Time.fixedDeltaTime);
-
-        Shoot();
         //transform.position += new Vector3(Time.deltaTime *_speed , 0, 0); 
+        //transform.position += transform.forward * _speed * Time.fixedDeltaTime;
     }
-
-    private void Shoot()
-    {
-        transform.Translate(Vector3.forward * Time.deltaTime * _speed, _target);   
-    }   
+    
 }
