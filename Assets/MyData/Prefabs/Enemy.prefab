@@ -818,11 +818,6 @@ MonoBehaviour:
   _agent: {fileID: 0}
   _enemyWalkPoints:
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!136 &3972046070421076588
 CapsuleCollider:
   m_ObjectHideFlags: 0
