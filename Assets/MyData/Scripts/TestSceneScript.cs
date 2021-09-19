@@ -23,15 +23,48 @@ public class TestSceneScript : MonoBehaviour
 
     private const int raysCount = 3;
     private float rayAngleStep = 10f;
-    
+
     #endregion
+
+    private Rigidbody _rb;
+    public float JumpForce = 500f;
+    private bool onGround = true;
+    private bool _jump;
 
     void Start()
     {
+        _rb = GetComponent<Rigidbody>();
+
     }
     private void Update()
     {
-        Rays();
+        //Rays();
+
+        _jump = Input.GetButton("Jump");
+
+        if (_jump)
+        {
+            Debug.Log("jump ");
+            _rb.AddForce(transform.up * JumpForce);
+            //onGround = false;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Floor"))
+        {
+            Debug.Log("На земле? " + onGround);
+            //onGround = true;
+        }   
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Floor"))
+        {
+            Debug.Log("вышел ");
+            //onGround = false;
+        }
     }
 
     private void Rays()
