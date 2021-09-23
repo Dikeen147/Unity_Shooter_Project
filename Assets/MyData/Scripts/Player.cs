@@ -12,12 +12,15 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _mine;
     [SerializeField] private Transform _mineSpawnPlace;
     [SerializeField] private Transform _bodyRotateY;
+
+    private Animator _playerAnimator;
     private bool _isFire;
     private bool _setMine;
     private float _rotateSpeedY = 300f;
     private Rigidbody _rb;
     private float _bulletForce = 10f;
     public float _mineForce = 5f;
+    private float shiftMult = 1f;
     private bool reload = true;
 
     private void Awake()
@@ -25,6 +28,7 @@ public class Player : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = true;
         _rb = GetComponent<Rigidbody>();
+        _playerAnimator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -35,15 +39,42 @@ public class Player : MonoBehaviour
         _direction.z = Input.GetAxis("Vertical");
         _direction.y = Input.GetAxis("Jump");
 
-        if (_isFire) Fire();
+        if (_direction == Vector3.zero)
+        {
+            _playerAnimator.SetBool("IsMove", false);
+            
+            if (_isFire)
+            {
+                _playerAnimator.SetTrigger("Shoot");
+            }
+        }
+        else
+        {
+            _playerAnimator.SetBool("IsMove", true);
+            
+            if (_isFire)
+            {
+                Fire();
+            }
+        }
+        
         if (_setMine) SetMine();
+
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            shiftMult = 2f;
+        }
+        else
+        {
+            shiftMult = 1f;
+        }
     }
 
     private void FixedUpdate()
     {
         //transform.Translate(_direction.normalized * _speed * Time.fixedDeltaTime);
         _direction = transform.TransformDirection(_direction);
-        _rb.MovePosition(transform.position + _direction.normalized * _speed * Time.fixedDeltaTime);
+        _rb.MovePosition(transform.position + _direction.normalized * _speed * shiftMult * Time.fixedDeltaTime);
         //transform.Rotate(Vector3.up, Input.GetAxis("Mouse X") * _rotateSpeed * Time.fixedDeltaTime);
         Vector3 rotate = new Vector3(0, (Input.GetAxis("Mouse X") * _rotateSpeed * Time.fixedDeltaTime), 0);
         
@@ -73,5 +104,14 @@ public class Player : MonoBehaviour
     private void ReloadMine()
     {
         reload = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("PickUpItem"))
+        {
+            Debug.Log("Вы подобрали: " + other.gameObject.name);
+            Destroy(other.gameObject);
+        }
     }
 }
