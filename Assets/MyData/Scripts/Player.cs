@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -22,11 +23,27 @@ public class Player : MonoBehaviour
     public float _mineForce = 5f;
     private float shiftMult = 1f;
     private bool reload = true;
+    private bool gameOnPause;
+
+    private Canvas[] canvasList;
+    private Canvas gameHUD;
+    private Canvas gamePause;
+    private Canvas gameEnd;
+    private Bullet bulletObj;
+
+    public Text scoreText;
+    public Text shootText;
+    private int shootCount;
+    private int scoreCount;
 
     private void Awake()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = true;
+        //Canvas[] canvasList = FindObjectsOfType<Canvas>();
+        gamePause = GameObject.FindGameObjectWithTag("gamePause").GetComponent<Canvas>();
+        gameHUD = GameObject.FindGameObjectWithTag("gameHUD").GetComponent<Canvas>();
+        gamePause.enabled = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = true;
         _rb = GetComponent<Rigidbody>();
         _playerAnimator = GetComponent<Animator>();
     }
@@ -68,6 +85,23 @@ public class Player : MonoBehaviour
         {
             shiftMult = 1f;
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            gameOnPause = gameOnPause ? false : true;
+            Time.timeScale = gameOnPause ? 0 : 1;
+            gamePause.enabled = gameOnPause;
+            gameHUD.enabled = !gameOnPause;
+            //gamePause.SetActive(gameOnPause);
+        }
+
+        if (bulletObj != null && bulletObj.hitEnemy)
+        {
+            bulletObj.hitEnemy = false;
+            Debug.Log("Есть попадание по врагу");
+            scoreCount += 100;
+            scoreText.text = $"Score: {scoreCount}";
+        }
     }
 
     private void FixedUpdate()
@@ -77,7 +111,7 @@ public class Player : MonoBehaviour
         _rb.MovePosition(transform.position + _direction.normalized * _speed * shiftMult * Time.fixedDeltaTime);
         //transform.Rotate(Vector3.up, Input.GetAxis("Mouse X") * _rotateSpeed * Time.fixedDeltaTime);
         Vector3 rotate = new Vector3(0, (Input.GetAxis("Mouse X") * _rotateSpeed * Time.fixedDeltaTime), 0);
-        
+
         _rb.MoveRotation(_rb.rotation * Quaternion.Euler(rotate));
         _bodyRotateY.Rotate(Vector3.left, Input.GetAxis("Mouse Y") * _rotateSpeedY * Time.fixedDeltaTime);
     }
@@ -87,8 +121,13 @@ public class Player : MonoBehaviour
         GameObject bullet = Instantiate(_bulletObject, _bulletSpawn.position, _bulletSpawn.rotation);
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
 
-        bullet.GetComponent<Bullet>().Initialization(5f);
+        bulletObj = bullet.GetComponent<Bullet>();
+        bulletObj.Initialization(5f);
+
         rb.AddForce(bullet.transform.forward * _bulletForce, ForceMode.Impulse);
+
+        shootCount++;
+        shootText.text = $"Shoot count: {shootCount}";
     }
     private void SetMine()
     {
