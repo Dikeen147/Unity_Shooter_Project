@@ -44,6 +44,8 @@ public class Enemy : MonoBehaviour
 
     private void EnemyPatrolling()
     {
+        if (_agent == null) return;
+
         if (_enemyWalkPoints.Length > 0 && _agent.remainingDistance < _agent.stoppingDistance)
         {
             _currentEnemyWalkPoint = (_currentEnemyWalkPoint + 1) % _enemyWalkPoints.Length;
@@ -59,7 +61,7 @@ public class Enemy : MonoBehaviour
         {
             _agent.SetDestination(transform.position);
             _enemyAnim.SetTrigger("Die");
-            Destroy(gameObject, 1.5f);
+            Destroy(gameObject, 1f);
         }
     }
 
@@ -120,6 +122,10 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private void StepSound()
+    {
+       
+    }
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +14,10 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _mine;
     [SerializeField] private Transform _mineSpawnPlace;
     [SerializeField] private Transform _bodyRotateY;
+    [SerializeField] private List<AudioClip> _audioClipList;
 
+    public AudioSource _playerShoot;
+    public AudioSource _playerWalk;
     private Animator _playerAnimator;
     private bool _isFire;
     private bool _setMine;
@@ -38,19 +42,23 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        //_playerWalk = GetComponent<AudioSource>();
+        //_playerShoot = GetComponent<AudioSource>();
         //Canvas[] canvasList = FindObjectsOfType<Canvas>();
         gamePause = GameObject.FindGameObjectWithTag("gamePause").GetComponent<Canvas>();
         gameHUD = GameObject.FindGameObjectWithTag("gameHUD").GetComponent<Canvas>();
         gamePause.enabled = false;
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = true;
         _rb = GetComponent<Rigidbody>();
         _playerAnimator = GetComponent<Animator>();
     }
 
     private void Update()
     {
+        int.TryParse(string.Join("", scoreText.text.Where(c => char.IsDigit(c))), out scoreCount);
         _isFire = Input.GetMouseButtonDown(0);
+
         if (reload) _setMine = Input.GetMouseButtonDown(1);
         _direction.x = Input.GetAxis("Horizontal");
         _direction.z = Input.GetAxis("Vertical");
@@ -75,6 +83,15 @@ public class Player : MonoBehaviour
             }
         }
         
+        if (Input.GetKey(KeyCode.Q))
+        {
+            Time.timeScale = 0.2f;
+        }
+        if (Input.GetKeyUp(KeyCode.Q))
+        {
+            Time.timeScale = 1f;
+        }
+
         if (_setMine) SetMine();
 
         if (Input.GetKey(KeyCode.LeftShift))
@@ -115,6 +132,12 @@ public class Player : MonoBehaviour
         _rb.MoveRotation(_rb.rotation * Quaternion.Euler(rotate));
         _bodyRotateY.Rotate(Vector3.left, Input.GetAxis("Mouse Y") * _rotateSpeedY * Time.fixedDeltaTime);
     }
+
+    private void StepSound()
+    {
+        _playerWalk.clip = _audioClipList[0];
+        _playerWalk.Play();
+    }
     private void Fire()
     {
         _isFire = false;
@@ -125,7 +148,8 @@ public class Player : MonoBehaviour
         bulletObj.Initialization(5f);
 
         rb.AddForce(bullet.transform.forward * _bulletForce, ForceMode.Impulse);
-
+        _playerShoot.clip = _audioClipList[1];
+        _playerShoot.Play();
         shootCount++;
         shootText.text = $"Shoot count: {shootCount}";
     }
@@ -135,6 +159,8 @@ public class Player : MonoBehaviour
         Rigidbody rbmine = mine.GetComponent<Rigidbody>();
         rbmine.AddForce(mine.transform.forward * _mineForce, ForceMode.Impulse);
 
+        _playerShoot.clip = _audioClipList[3];
+        _playerShoot.Play();
         reload = false;
         _setMine = false;
         Invoke("ReloadMine", 2f);
@@ -150,7 +176,9 @@ public class Player : MonoBehaviour
         if (other.gameObject.CompareTag("PickUpItem"))
         {
             Debug.Log("Вы подобрали: " + other.gameObject.name);
-            Destroy(other.gameObject);
+            var a = other.GetComponent<AudioSource>();
+            a.Play();
+            Destroy(other.gameObject, 1f);
         }
     }
 }
