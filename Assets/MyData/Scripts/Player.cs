@@ -106,6 +106,18 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            
+            if (gameOnPause)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = true;
+            } 
+            else 
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+
             gameOnPause = gameOnPause ? false : true;
             Time.timeScale = gameOnPause ? 0 : 1;
             gamePause.enabled = gameOnPause;
