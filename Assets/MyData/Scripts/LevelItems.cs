@@ -5,10 +5,11 @@ using UnityEngine;
 public class LevelItems : MonoBehaviour
 {
     private float _turnSpeed = 50f;
-    // Start is called before the first frame update
+    private AudioSource _itemAudio;
+
     void Start()
     {
-        
+        _itemAudio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -22,7 +23,9 @@ public class LevelItems : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             Debug.Log("Вы подобрали предмет");
-            Destroy(gameObject);
+            if (_itemAudio != null) _itemAudio.Play();
+            Destroy(gameObject, 0.5f);
+            
         }
     }
 

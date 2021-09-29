@@ -30,6 +30,7 @@ public class TestSceneScript : MonoBehaviour
     public float JumpForce = 500f;
     private bool onGround = true;
     private bool _jump;
+    private float _speed = 5f;
 
     void Start()
     {
@@ -40,30 +41,43 @@ public class TestSceneScript : MonoBehaviour
     {
         //Rays();
 
-        _jump = Input.GetButton("Jump");
-
-        if (_jump)
+        if (onGround)
         {
-            Debug.Log("jump ");
-            _rb.AddForce(transform.up * JumpForce);
-            //onGround = false;
+            if (Input.GetButton("Jump"))
+            {
+                Debug.Log("jump ");
+                _rb.AddForce(transform.up * JumpForce);
+            }
         }
+
+        PlayerMove();
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void PlayerMove()
     {
-        if (collision.gameObject.CompareTag("Floor"))
+        float ad = Input.GetAxis("Horizontal");
+        float ws = Input.GetAxis("Vertical");
+
+        Vector3 dir = new Vector3(0, 0, ws);
+
+        _rb.MovePosition(transform.position + transform.TransformDirection(dir.normalized) * _speed * Time.fixedDeltaTime);
+        Vector3 rotate = new Vector3(0, ad, 0);
+        _rb.MoveRotation(_rb.rotation * Quaternion.Euler(rotate));
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Floor"))
         {
             Debug.Log("На земле? " + onGround);
-            //onGround = true;
+            onGround = true;
         }   
     }
-    private void OnCollisionExit(Collision collision)
+    private void OnTriggerExit(Collider other)
     {
-        if (collision.gameObject.CompareTag("Floor"))
+        if (other.gameObject.CompareTag("Floor"))
         {
             Debug.Log("вышел ");
-            //onGround = false;
+            onGround = false;
         }
     }
 
