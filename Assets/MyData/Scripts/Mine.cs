@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class Mine : MonoBehaviour
 {
-    [SerializeField] private int _damage;
     public float _radius = 5f;
     public float _force = 100f;
     public AudioSource mineAudio;
@@ -34,14 +33,6 @@ public class Mine : MonoBehaviour
             gameScoreText.text = $"Score: {gameScoreCount + 500}";
             _enemy.GetComponent<Enemy>().enemyHealth -= 500;
             Explode();
-            // var enemy = other.GetComponent<Enemy>();
-            // enemy.Hurt(_damage);            
-            // Destroy(gameObject);
-        }
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("Игрок наступил на мину");
-            //Explode(other);
             // var enemy = other.GetComponent<Enemy>();
             // enemy.Hurt(_damage);            
             // Destroy(gameObject);
