@@ -24,8 +24,6 @@ public class Menu : MonoBehaviour
         menuAudio.volume = menuSoundSlider.value;
     }
 
-    
-
     public void PlayGame()
     {
         SceneManager.LoadScene(1);

@@ -14,6 +14,8 @@ public class LevelInstantiate : MonoBehaviour
     public Canvas endGameCanvas;
     private bool enemyOnScene;
     private AudioSource levelAudio;
+    public AudioClip winClipSound;
+    public AudioSource winClipAudio;
 
     private void Awake()
     {
@@ -22,9 +24,9 @@ public class LevelInstantiate : MonoBehaviour
         //GameObject player = Instantiate(playerPrefab, playerSpawn.position, playerSpawn.rotation);
         //player.GetComponent<Player>().scoreText = scoreText;
         //player.GetComponent<Player>().shootText = shootCount;
-
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         enemy = GameObject.FindGameObjectWithTag("Enemy");
-        var a = endGameCanvas;
 
     }
 
@@ -37,8 +39,9 @@ public class LevelInstantiate : MonoBehaviour
             endGameCanvas.gameObject.active = true;
             Time.timeScale = 0;
             levelAudio.Stop();
-
-            Cursor.lockState = CursorLockMode.Confined;
+            winClipAudio.clip = winClipSound;
+            winClipAudio.Play();
+            Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
         }

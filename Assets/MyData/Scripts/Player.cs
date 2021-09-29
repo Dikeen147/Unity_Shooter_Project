@@ -42,6 +42,7 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        Time.timeScale = 1;
         //_playerWalk = GetComponent<AudioSource>();
         //_playerShoot = GetComponent<AudioSource>();
         //Canvas[] canvasList = FindObjectsOfType<Canvas>();
