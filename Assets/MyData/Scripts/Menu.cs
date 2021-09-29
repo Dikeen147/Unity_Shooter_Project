@@ -10,7 +10,6 @@ public class Menu : MonoBehaviour
     public Slider menuSoundSlider;
     public AudioSource menuAudio;
     public Text menuSounudPercent;
-
     private Button playGameButton;
 
     private void Awake()
